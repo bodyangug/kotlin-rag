@@ -1,0 +1,113 @@
+{
+	"info": {
+		"_postman_id": "bd6a10d8-ff9d-4b67-a717-9f450c3fecab",
+		"name": "Chatbot API",
+		"description": "Postman коллекция для маршрутов Chatbot API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13632098"
+	},
+	"item": [
+		{
+			"name": "Answer Question",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"chat_id\": \"1\",\n    \"text\": \"Расскажи мне про файл, который я тебе загрузил.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/llm/question",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"llm",
+						"question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Context",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "chat_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/aseev/Downloads/kz6.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/llm/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"llm",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Context",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"chat_id\": \"1\",\r\n    \"query\": \"Расскажи мне про свой контекст\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/llm/context",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"llm",
+						"context"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
