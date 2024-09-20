@@ -43,6 +43,7 @@ dependencies {
     // LangChain4J
     implementation("dev.langchain4j:langchain4j:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-azure-open-ai:$langChain4jVersion")
+    implementation("dev.langchain4j:langchain4j-hugging-face:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-chroma:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-document-parser-apache-tika:$langChain4jVersion")
     //Vector Store
