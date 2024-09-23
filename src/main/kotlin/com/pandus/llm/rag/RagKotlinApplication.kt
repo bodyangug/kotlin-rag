@@ -10,7 +10,7 @@ import kotlinx.serialization.json.Json
 import org.koin.ktor.plugin.Koin
 
 // TODO:
-//  1. Launch Chroma locally;
+//  1. Add factory for different configurations
 //  2. Add possibility to generate image;
 //  3. Add auth.
 

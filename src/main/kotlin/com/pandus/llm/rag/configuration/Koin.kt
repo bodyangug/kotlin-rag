@@ -5,9 +5,9 @@ import com.pandus.llm.rag.entity.MetadataFields
 import dev.langchain4j.data.document.DocumentSplitter
 import dev.langchain4j.data.document.splitter.DocumentSplitters
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
-import dev.langchain4j.model.azure.AzureOpenAiEmbeddingModel
-import dev.langchain4j.model.azure.AzureOpenAiTokenizer
-import dev.langchain4j.model.huggingface.HuggingFaceChatModel
+import dev.langchain4j.model.ollama.OllamaChatModel
+import dev.langchain4j.model.ollama.OllamaEmbeddingModel
+import dev.langchain4j.model.openai.OpenAiTokenizer
 import dev.langchain4j.rag.DefaultRetrievalAugmentor
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
@@ -18,55 +18,44 @@ import dev.langchain4j.store.embedding.chroma.ChromaEmbeddingStore
 import dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey
 import io.ktor.server.application.*
 import org.koin.dsl.module
-import org.testcontainers.chromadb.ChromaDBContainer
-import java.util.*
 
 fun appModule(environment: ApplicationEnvironment) = module {
     // Env properties
     single { loadAppConfig(environment) }
-    // Vector Store
-    single {
-        val appConfig: AppConfig = get()
-        ChromaDBContainer(appConfig.chromaConfig.imageName).also { it.start() }
-    }
     // LLM
     single {
         val appConfig: AppConfig = get()
-        HuggingFaceChatModel.builder()
+        OllamaChatModel.builder()
+            .baseUrl(appConfig.localAI.baseUrl)
+            .modelName(appConfig.localAI.modelName)
             .temperature(appConfig.modelConfig.temperature)
-            .accessToken(appConfig.huggingFace.apiKey)
-            .modelId(appConfig.huggingFace.modelName)
             .build()
     }
     // Embedding model
     single {
         val appConfig: AppConfig = get()
-        AzureOpenAiEmbeddingModel.builder()
-            .endpoint(appConfig.azureConfig.endpoint)
-            .apiKey(appConfig.azureConfig.apiKey)
-            .deploymentName(appConfig.azureConfig.tokenizerName)
-            .logRequestsAndResponses(true)
+        OllamaEmbeddingModel.builder()
+            .baseUrl(appConfig.localAI.baseUrl)
+            .modelName(appConfig.localAI.embeddingModelName)
             .build()
     }
     // Vector store
     single {
-        val chroma: ChromaDBContainer = get()
+        val appConfig: AppConfig = get()
         ChromaEmbeddingStore.builder()
-            .baseUrl(chroma.endpoint)
-            .collectionName(UUID.randomUUID().toString())
-            .logRequests(true)
-            .logResponses(true)
+            .baseUrl(appConfig.chromaConfig.baseUrl)
+            .collectionName(appConfig.chromaConfig.collectionName)
             .build()
     }
     // Tokenizer
     single {
         val appConfig: AppConfig = get()
-        AzureOpenAiTokenizer(appConfig.azureConfig.deploymentName)
+        OpenAiTokenizer(appConfig.localAI.tokenizerName)
     }
     // TextSplitter
     single {
         val appConfig: AppConfig = get()
-        val tokenizer: AzureOpenAiTokenizer = get()
+        val tokenizer: OpenAiTokenizer = get()
         DocumentSplitters.recursive(
             appConfig.modelConfig.tokenizer.maxSegmentSizeInTokens,
             appConfig.modelConfig.tokenizer.maxOverlapSizeInTokens,
@@ -75,7 +64,7 @@ fun appModule(environment: ApplicationEnvironment) = module {
     }
     // EmbeddingStoreIngestor
     single {
-        val embeddingModel: AzureOpenAiEmbeddingModel = get()
+        val embeddingModel: OllamaEmbeddingModel = get()
         val embeddingStore: ChromaEmbeddingStore = get()
         val splitter: DocumentSplitter = get()
 
@@ -88,7 +77,7 @@ fun appModule(environment: ApplicationEnvironment) = module {
     // EmbeddingStoreContentRetriever
     single {
         val appConfig: AppConfig = get()
-        val embeddingModel: AzureOpenAiEmbeddingModel = get()
+        val embeddingModel: OllamaEmbeddingModel = get()
         val embeddingStore: ChromaEmbeddingStore = get()
         EmbeddingStoreContentRetriever.builder()
             .embeddingModel(embeddingModel)
@@ -107,8 +96,7 @@ fun appModule(environment: ApplicationEnvironment) = module {
     }
     // QueryTransformer
     single {
-        val llm: HuggingFaceChatModel = get()
-
+        val llm: OllamaChatModel = get()
         CompressingQueryTransformer(llm)
     }
     // RetrievalAugmentor
@@ -123,7 +111,7 @@ fun appModule(environment: ApplicationEnvironment) = module {
     }
     // AIService
     single {
-        val llm: HuggingFaceChatModel = get()
+        val llm: OllamaChatModel = get()
         val chatMemory: MessageWindowChatMemory = get()
         val retrievalAugmentor: DefaultRetrievalAugmentor = get()
 
