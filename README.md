@@ -5,6 +5,7 @@ LangChain4j for advanced language model capabilities. The API provides endpoints
 assistant and upload context documents to enhance the assistant's responses.
 
 ## Features
+
 - AI Assistant Endpoint: Interact with an AI assistant using natural language queries.
 - Context Upload: Upload documents to provide context for the assistant.
 - Dynamic Context Retrieval: Retrieve relevant context during conversations using embeddings.
@@ -13,7 +14,9 @@ assistant and upload context documents to enhance the assistant's responses.
 - Document Parsing: Use Apache Tika for parsing various document formats.
 
 ## Architecture
-The application is structured around Ktor's routing system, with endpoints for handling user interactions. Key components include:
+
+The application is structured around Ktor's routing system, with endpoints for handling user interactions. Key
+components include:
 
 - Assistant: Handles user queries and provides responses using the AI model.
 - EmbeddingStore: Stores and retrieves embeddings for context documents.
@@ -24,19 +27,40 @@ The application is structured around Ktor's routing system, with endpoints for h
 
 - Kotlin: Version 2.0.0
 - Java: JDK 11
-- Gradle: Version 8.6 or higher.
+- Gradle: Version 8.6.
 - Azure OpenAI Service: Access to Azure OpenAI models like gpt-4 and text-embedding-ada-002.
+- For local set-up install [Ollama](https://ollama.com/download)
 - Docker: For running ChromaDB container.
 - Postman: For testing API endpoints (optional).
 
 ## Running the Application
-Run the application using Gradle:
+
+1. Run Chroma using docker:
+
+```shell
+docker run -p 8000:8000 chromadb/chroma
+```
+
+2. Run Ollama and pull two models:
+
+```shell
+ollama pull mxbai-embed-large
+```
+
+```shell
+ollama pull llama3.1
+```
+
+3. Run the application using Gradle:
+
 ```shell
 ./gradlew run
 ```
+
 The server will start on the configured host and port (default is http://0.0.0.0:8080).
 
 ## Contributing
+
 Contributions are welcome! Please follow these steps:
 
 - Fork the Repository: Create your own fork of the project.
@@ -44,4 +68,5 @@ Contributions are welcome! Please follow these steps:
 - Submit a Pull Request: When ready, submit a PR with a clear description of your changes.
 
 ## License
+
 This project is licensed under the MIT License.
