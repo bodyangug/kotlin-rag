@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 data class AppConfig(
     val azureConfig: AzureConfig,
     val huggingFace: HuggingFaceConfig,
+    val localAI: LocalLLMConfig,
     val chromaConfig: ChromaConfig,
     val modelConfig: ModelConfig
 )
@@ -22,8 +23,16 @@ data class HuggingFaceConfig(
     val tokenizerName: String
 )
 
+data class LocalLLMConfig(
+    val baseUrl: String,
+    val modelName: String,
+    val embeddingModelName: String,
+    val tokenizerName: String
+)
+
 data class ChromaConfig(
-    val imageName: String
+    val baseUrl: String,
+    val collectionName: String
 )
 
 data class ModelConfig(
@@ -45,6 +54,12 @@ data class EmbeddingConfig(
 
 fun loadAppConfig(environment: ApplicationEnvironment): AppConfig {
     return AppConfig(
+        localAI = LocalLLMConfig(
+            baseUrl = environment.getProperties("myapp.local_ai.base_url"),
+            modelName = environment.getProperties("myapp.local_ai.model_name"),
+            tokenizerName = environment.getProperties("myapp.local_ai.tokenizer_name"),
+            embeddingModelName = environment.getProperties("myapp.local_ai.embedding_model_name")
+        ),
         huggingFace = HuggingFaceConfig(
             modelName = environment.getProperties("myapp.hugging_face.model_name"),
             apiKey = environment.getProperties("myapp.hugging_face.api_key"),
@@ -52,13 +67,13 @@ fun loadAppConfig(environment: ApplicationEnvironment): AppConfig {
         ),
         azureConfig = AzureConfig(
             endpoint = environment.getProperties("myapp.azure.endpoint"),
-
             apiKey = environment.getProperties("myapp.azure.api_key"),
             deploymentName = environment.getProperties("myapp.azure.deployment_name"),
             tokenizerName = environment.getProperties("myapp.azure.tokenizer_name")
         ),
         chromaConfig = ChromaConfig(
-            imageName = environment.getProperties("myapp.chroma.image_name")
+            baseUrl = environment.getProperties("myapp.chroma.base_url"),
+            collectionName = environment.getProperties("myapp.chroma.collection_name")
         ),
         modelConfig = ModelConfig(
             maxMessages = environment.getProperties("myapp.llm.chat_memory.max_messages").toInt(),
