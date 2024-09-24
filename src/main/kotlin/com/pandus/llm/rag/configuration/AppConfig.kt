@@ -1,5 +1,6 @@
 package com.pandus.llm.rag.configuration
 
+import com.pandus.llm.rag.entity.LLMType
 import io.ktor.server.application.*
 
 data class AppConfig(
@@ -20,7 +21,7 @@ data class AzureConfig(
 data class HuggingFaceConfig(
     val modelName: String,
     val apiKey: String,
-    val tokenizerName: String
+    val embeddingModel: String
 )
 
 data class LocalLLMConfig(
@@ -36,6 +37,7 @@ data class ChromaConfig(
 )
 
 data class ModelConfig(
+    val type: LLMType,
     val maxMessages: Int,
     val maxTokens: Int,
     val tokenizer: TokenizerConfig,
@@ -63,7 +65,7 @@ fun loadAppConfig(environment: ApplicationEnvironment): AppConfig {
         huggingFace = HuggingFaceConfig(
             modelName = environment.getProperties("myapp.hugging_face.model_name"),
             apiKey = environment.getProperties("myapp.hugging_face.api_key"),
-            tokenizerName = environment.getProperties("myapp.hugging_face.tokenizer_name")
+            embeddingModel = environment.getProperties("myapp.hugging_face.embedding_model")
         ),
         azureConfig = AzureConfig(
             endpoint = environment.getProperties("myapp.azure.endpoint"),
@@ -76,6 +78,7 @@ fun loadAppConfig(environment: ApplicationEnvironment): AppConfig {
             collectionName = environment.getProperties("myapp.chroma.collection_name")
         ),
         modelConfig = ModelConfig(
+            type = LLMType.fromValue(environment.getProperties("myapp.llm_type")),
             maxMessages = environment.getProperties("myapp.llm.chat_memory.max_messages").toInt(),
             tokenizer = TokenizerConfig(
                 maxSegmentSizeInTokens = environment.getProperties("myapp.llm.tokenizer.max_segment_size_in_tokens")

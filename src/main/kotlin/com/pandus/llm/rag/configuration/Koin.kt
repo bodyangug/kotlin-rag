@@ -2,18 +2,18 @@ package com.pandus.llm.rag.configuration
 
 import com.pandus.llm.rag.entity.Assistant
 import com.pandus.llm.rag.entity.MetadataFields
-import dev.langchain4j.data.document.DocumentSplitter
+import com.pandus.llm.rag.factory.ILanguageModelFactory
+import com.pandus.llm.rag.factory.LanguageModelFactoryImpl
 import dev.langchain4j.data.document.splitter.DocumentSplitters
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
-import dev.langchain4j.model.ollama.OllamaChatModel
-import dev.langchain4j.model.ollama.OllamaEmbeddingModel
-import dev.langchain4j.model.openai.OpenAiTokenizer
+import dev.langchain4j.model.Tokenizer
+import dev.langchain4j.model.chat.ChatLanguageModel
+import dev.langchain4j.model.embedding.EmbeddingModel
 import dev.langchain4j.rag.DefaultRetrievalAugmentor
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.rag.query.transformer.CompressingQueryTransformer
 import dev.langchain4j.service.AiServices
-import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import dev.langchain4j.store.embedding.chroma.ChromaEmbeddingStore
 import dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey
 import io.ktor.server.application.*
@@ -22,22 +22,19 @@ import org.koin.dsl.module
 fun appModule(environment: ApplicationEnvironment) = module {
     // Env properties
     single { loadAppConfig(environment) }
-    // LLM
+    // Factory
+    single<ILanguageModelFactory> { LanguageModelFactoryImpl(get()) }
+    // LLM from factory
     single {
-        val appConfig: AppConfig = get()
-        OllamaChatModel.builder()
-            .baseUrl(appConfig.localAI.baseUrl)
-            .modelName(appConfig.localAI.modelName)
-            .temperature(appConfig.modelConfig.temperature)
-            .build()
+        get<ILanguageModelFactory>().createChatLanguageModel()
     }
-    // Embedding model
+    // Embedding model from factory
     single {
-        val appConfig: AppConfig = get()
-        OllamaEmbeddingModel.builder()
-            .baseUrl(appConfig.localAI.baseUrl)
-            .modelName(appConfig.localAI.embeddingModelName)
-            .build()
+        get<ILanguageModelFactory>().createEmbeddingModel()
+    }
+    // Tokenizer from factory
+    single {
+        get<ILanguageModelFactory>().createTokenizer()
     }
     // Vector store
     single {
@@ -47,37 +44,20 @@ fun appModule(environment: ApplicationEnvironment) = module {
             .collectionName(appConfig.chromaConfig.collectionName)
             .build()
     }
-    // Tokenizer
-    single {
-        val appConfig: AppConfig = get()
-        OpenAiTokenizer(appConfig.localAI.tokenizerName)
-    }
     // TextSplitter
     single {
         val appConfig: AppConfig = get()
-        val tokenizer: OpenAiTokenizer = get()
+        val tokenizer: Tokenizer = get()
         DocumentSplitters.recursive(
             appConfig.modelConfig.tokenizer.maxSegmentSizeInTokens,
             appConfig.modelConfig.tokenizer.maxOverlapSizeInTokens,
             tokenizer
         )
     }
-    // EmbeddingStoreIngestor
-    single {
-        val embeddingModel: OllamaEmbeddingModel = get()
-        val embeddingStore: ChromaEmbeddingStore = get()
-        val splitter: DocumentSplitter = get()
-
-        EmbeddingStoreIngestor.builder()
-            .embeddingModel(embeddingModel)
-            .embeddingStore(embeddingStore)
-            .documentSplitter(splitter)
-            .build()
-    }
     // EmbeddingStoreContentRetriever
     single {
         val appConfig: AppConfig = get()
-        val embeddingModel: OllamaEmbeddingModel = get()
+        val embeddingModel: EmbeddingModel = get()
         val embeddingStore: ChromaEmbeddingStore = get()
         EmbeddingStoreContentRetriever.builder()
             .embeddingModel(embeddingModel)
@@ -96,7 +76,7 @@ fun appModule(environment: ApplicationEnvironment) = module {
     }
     // QueryTransformer
     single {
-        val llm: OllamaChatModel = get()
+        val llm: ChatLanguageModel = get()
         CompressingQueryTransformer(llm)
     }
     // RetrievalAugmentor
@@ -111,7 +91,7 @@ fun appModule(environment: ApplicationEnvironment) = module {
     }
     // AIService
     single {
-        val llm: OllamaChatModel = get()
+        val llm: ChatLanguageModel = get()
         val chatMemory: MessageWindowChatMemory = get()
         val retrievalAugmentor: DefaultRetrievalAugmentor = get()
 

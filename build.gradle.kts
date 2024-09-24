@@ -42,8 +42,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$junitTestVersion")
     // LangChain4J
     implementation("dev.langchain4j:langchain4j:$langChain4jVersion")
-    //    implementation("dev.langchain4j:langchain4j-azure-open-ai:$langChain4jVersion")
-    //    implementation("dev.langchain4j:langchain4j-hugging-face:$langChain4jVersion")
+    implementation("dev.langchain4j:langchain4j-azure-open-ai:$langChain4jVersion")
+    implementation("dev.langchain4j:langchain4j-hugging-face:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-ollama:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-open-ai:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-chroma:$langChain4jVersion")
