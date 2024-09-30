@@ -5,6 +5,6 @@ import dev.langchain4j.service.SystemMessage
 import dev.langchain4j.service.UserMessage
 
 interface Assistant {
-    @SystemMessage("You are friend, answer me using slang.")
+    @SystemMessage("You are my friend, answer me using not only RAG context.")
     fun chat(@UserMessage message: String, @MemoryId chatId: String): String
 }
