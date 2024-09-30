@@ -10,6 +10,7 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.Tokenizer
 import dev.langchain4j.model.chat.ChatLanguageModel
 import dev.langchain4j.model.embedding.EmbeddingModel
+import dev.langchain4j.model.openai.OpenAiImageModel
 import dev.langchain4j.rag.DefaultRetrievalAugmentor
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
@@ -112,6 +113,13 @@ fun appModule(environment: ApplicationEnvironment) = module {
             .chatLanguageModel(llm)
             .chatMemoryProvider { chatMemory }
             .retrievalAugmentor(retrievalAugmentor)
+            .build()
+    }
+    single {
+        val appConfig: AppConfig = get()
+        OpenAiImageModel.builder()
+            .apiKey(appConfig.openAI.apiKey)
+            .modelName(appConfig.openAI.modelName)
             .build()
     }
 }

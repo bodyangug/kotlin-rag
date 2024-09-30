@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 data class AppConfig(
     val azureConfig: AzureConfig,
     val huggingFace: HuggingFaceConfig,
+    val openAI: OpenAIConfig,
     val localAI: LocalLLMConfig,
     val chromaConfig: ChromaConfig,
     val modelConfig: ModelConfig
@@ -16,6 +17,11 @@ data class AzureConfig(
     val apiKey: String,
     val deploymentName: String,
     val tokenizerName: String
+)
+
+data class OpenAIConfig(
+    val apiKey: String,
+    val modelName: String
 )
 
 data class HuggingFaceConfig(
@@ -91,6 +97,10 @@ fun loadAppConfig(environment: ApplicationEnvironment): AppConfig {
             ),
             temperature = environment.getProperties("myapp.llm.model.temperature").toDouble(),
             maxTokens = environment.getProperties("myapp.llm.model.max_tokens").toInt()
+        ),
+        openAI = OpenAIConfig(
+            apiKey = environment.getProperties("myapp.open_ai.api_key"),
+            modelName = environment.getProperties("myapp.open_ai.model_name")
         )
     )
 }

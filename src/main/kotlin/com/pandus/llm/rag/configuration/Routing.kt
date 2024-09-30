@@ -1,6 +1,7 @@
 package com.pandus.llm.rag.configuration
 
 import com.pandus.llm.rag.route.answerQuestion
+import com.pandus.llm.rag.route.generateImage
 import com.pandus.llm.rag.route.getContextRoute
 import com.pandus.llm.rag.route.uploadContext
 import io.ktor.server.application.*
@@ -12,6 +13,7 @@ fun Application.configureRouting() {
             answerQuestion()
             uploadContext()
             getContextRoute()
+            generateImage()
         }
     }
 }

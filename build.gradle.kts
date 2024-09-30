@@ -47,6 +47,7 @@ dependencies {
     implementation("dev.langchain4j:langchain4j-ollama:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-open-ai:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-chroma:$langChain4jVersion")
+    implementation("dev.langchain4j:langchain4j-open-ai:$langChain4jVersion")
     implementation("dev.langchain4j:langchain4j-document-parser-apache-tika:$langChain4jVersion")
     //Koin
     implementation("io.insert-koin:koin-ktor:$koinVersion")
