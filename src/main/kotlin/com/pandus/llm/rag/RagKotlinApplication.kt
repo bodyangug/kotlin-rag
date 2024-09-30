@@ -10,7 +10,7 @@ import kotlinx.serialization.json.Json
 import org.koin.ktor.plugin.Koin
 
 // TODO:
-//  1. Add logging;
+//  1. Add logging, add docker file for chroma;
 //  2. Add auth.
 
 fun main(args: Array<String>) {

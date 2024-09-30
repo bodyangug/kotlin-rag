@@ -20,7 +20,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"chat_id\": \"1\",\n    \"text\": \"Расскажи мне про файл, который я тебе загрузил.\"\n}",
+					"raw": "{\n    \"chat_id\": \"1\",\n    \"text\": \"Hi, can u make summary of the file that I uploaded !\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -43,6 +43,41 @@
 			"response": []
 		},
 		{
+			"name": "Generate Image",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"chat_id\": \"1\",\n    \"text\": \"Donald Duck in London\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/llm/generate-image",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"llm",
+						"generate-image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Upload Context",
 			"request": {
 				"method": "POST",
@@ -52,13 +87,13 @@
 					"formdata": [
 						{
 							"key": "chat_id",
-							"value": "1",
+							"value": "2",
 							"type": "text"
 						},
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/C:/Users/aseev/Downloads/kz6.pdf"
+							"src": "/C:/Users/aseev/Downloads/commemorative_constitution_2021.pdf"
 						}
 					]
 				},
@@ -87,7 +122,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"chat_id\": \"1\",\r\n    \"query\": \"Расскажи мне про свой контекст\"\r\n}",
+					"raw": "{\r\n    \"chat_id\": \"2\",\r\n    \"query\": \"Расскажи мне про свой контекст\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
