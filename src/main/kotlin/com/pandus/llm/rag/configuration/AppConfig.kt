@@ -78,7 +78,7 @@ fun loadAppConfig(environment: ApplicationEnvironment): AppConfig {
             collectionName = environment.getProperties("myapp.chroma.collection_name")
         ),
         modelConfig = ModelConfig(
-            type = LLMType.fromValue(environment.getProperties("myapp.llm_type")),
+            type = LLMType.fromValue(environment.getProperties("myapp.llm.type")),
             maxMessages = environment.getProperties("myapp.llm.chat_memory.max_messages").toInt(),
             tokenizer = TokenizerConfig(
                 maxSegmentSizeInTokens = environment.getProperties("myapp.llm.tokenizer.max_segment_size_in_tokens")
