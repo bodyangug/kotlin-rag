@@ -10,9 +10,8 @@ import kotlinx.serialization.json.Json
 import org.koin.ktor.plugin.Koin
 
 // TODO:
-//  1. Add possibility to generate image;
-//  2. Add logging;
-//  3. Add auth.
+//  1. Add logging;
+//  2. Add auth.
 
 fun main(args: Array<String>) {
     EngineMain.main(args)
