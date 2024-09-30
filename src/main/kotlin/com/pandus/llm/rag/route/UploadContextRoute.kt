@@ -27,7 +27,6 @@ fun Route.uploadContext() {
                     if (part.name == MetadataFields.CHAT_ID.value) {
                         chatId = part.value
                     }
-                    part.dispose()
                 }
 
                 is PartData.FileItem -> {

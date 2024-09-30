@@ -4,6 +4,7 @@ import com.pandus.llm.rag.entity.Assistant
 import com.pandus.llm.rag.entity.MetadataFields
 import com.pandus.llm.rag.factory.ILanguageModelFactory
 import com.pandus.llm.rag.factory.LanguageModelFactoryImpl
+import dev.langchain4j.data.document.DocumentSplitter
 import dev.langchain4j.data.document.splitter.DocumentSplitters
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.Tokenizer
@@ -12,8 +13,9 @@ import dev.langchain4j.model.embedding.EmbeddingModel
 import dev.langchain4j.rag.DefaultRetrievalAugmentor
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
-import dev.langchain4j.rag.query.transformer.CompressingQueryTransformer
+import dev.langchain4j.rag.query.transformer.DefaultQueryTransformer
 import dev.langchain4j.service.AiServices
+import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import dev.langchain4j.store.embedding.chroma.ChromaEmbeddingStore
 import dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey
 import io.ktor.server.application.*
@@ -76,17 +78,28 @@ fun appModule(environment: ApplicationEnvironment) = module {
     }
     // QueryTransformer
     single {
-        val llm: ChatLanguageModel = get()
-        CompressingQueryTransformer(llm)
+        DefaultQueryTransformer()
     }
     // RetrievalAugmentor
     single {
         val contentRetriever: EmbeddingStoreContentRetriever = get()
-        val queryTransformer: CompressingQueryTransformer = get()
+        val queryTransformer: DefaultQueryTransformer = get()
 
         DefaultRetrievalAugmentor.builder()
             .queryTransformer(queryTransformer)
             .contentRetriever(contentRetriever)
+            .build()
+    }
+    // EmbeddingStoreIngestor
+    single {
+        val embeddingModel: EmbeddingModel = get()
+        val embeddingStore: ChromaEmbeddingStore = get()
+        val splitter: DocumentSplitter = get()
+
+        EmbeddingStoreIngestor.builder()
+            .embeddingModel(embeddingModel)
+            .embeddingStore(embeddingStore)
+            .documentSplitter(splitter)
             .build()
     }
     // AIService
