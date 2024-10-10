@@ -5,6 +5,7 @@ import com.pandus.llm.rag.route.generateImage
 import com.pandus.llm.rag.route.getContextRoute
 import com.pandus.llm.rag.route.uploadContext
 import io.ktor.server.application.*
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
@@ -15,5 +16,6 @@ fun Application.configureRouting() {
             getContextRoute()
             generateImage()
         }
+        swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
     }
 }

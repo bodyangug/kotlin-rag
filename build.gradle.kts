@@ -17,11 +17,17 @@ val pdfBoxVersion: String by extra
 val koinVersion: String by extra
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(21)
 }
 
 application {
-    mainClass.set("com.example.RagKotlinApplication")
+    mainClass.set("com.pandus.llm.rag.RagKotlinApplicationKt")
+}
+
+tasks.jar {
+    manifest {
+        attributes("Main-Class" to "com.pandus.llm.rag.RagKotlinApplicationKt")
+    }
 }
 
 repositories {
@@ -36,8 +42,10 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-    // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
+    implementation("io.ktor:ktor-server-swagger:$ktorVersion")
+    implementation("io.ktor:ktor-server-openapi:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     // Tests
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$junitTestVersion")
     // LangChain4J
@@ -51,4 +59,6 @@ dependencies {
     implementation("dev.langchain4j:langchain4j-document-parser-apache-tika:$langChain4jVersion")
     //Koin
     implementation("io.insert-koin:koin-ktor:$koinVersion")
+
 }
+
