@@ -1,0 +1,133 @@
+openapi: "3.1.0"
+info:
+  title: "rag_kotlin API"
+  description: "rag_kotlin API"
+  version: "1.0.0"
+servers:
+- url: "http://localhost:8080"
+paths:
+  /llm/context:
+    get:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /llm/generate-image:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateImageRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GenerateImageResponse"
+  /llm/question:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /llm/upload:
+    post:
+      description: ""
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing chat_id"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    chatId: ""
+                    answer: "Files uploaded successfully:\n"
+components:
+  schemas:
+    ContextRequest:
+      type: "object"
+      properties:
+        chatId:
+          type: "string"
+        query:
+          type: "string"
+      required:
+      - "chatId"
+      - "query"
+    UserResponse:
+      type: "object"
+      properties:
+        chatId:
+          type: "string"
+        answer:
+          type: "string"
+      required:
+      - "chatId"
+      - "answer"
+    GenerateImageRequest:
+      type: "object"
+      properties:
+        chatId:
+          type: "string"
+        text:
+          type: "string"
+      required:
+      - "chatId"
+      - "text"
+    GenerateImageResponse:
+      type: "object"
+      properties:
+        chatId:
+          type: "string"
+        url:
+          type: "string"
+      required:
+      - "chatId"
+      - "url"
+    UserRequest:
+      type: "object"
+      properties:
+        chatId:
+          type: "string"
+        text:
+          type: "string"
+      required:
+      - "chatId"
+      - "text"
